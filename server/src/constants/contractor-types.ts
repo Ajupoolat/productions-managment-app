@@ -1,0 +1,8 @@
+export enum ContractorType {
+  FREELANCER = "FREELANCER",
+  CAST = "CAST",
+  SUPPLIER = "SUPPLIER",
+  CAST_CREW_AGENT = "CAST_CREW_AGENT",
+  TCS_TEAM = "TCS_TEAM",
+  INTERN = "INTERN",
+}
