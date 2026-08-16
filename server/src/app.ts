@@ -21,8 +21,10 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'success', message: 'API is running successfully!' });
 });
 
+import routes from './routes';
+
 // API Routes will be mounted here
-// app.use('/api', routes);
+app.use('/api', routes);
 
 // Handle unknown routes
 app.use((req: Request, res: Response, next: NextFunction) => {

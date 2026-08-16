@@ -9,6 +9,7 @@ export interface IUser extends Document {
   roleId?: Types.ObjectId;
   status: UserStatus;
   isActive: boolean;
+  refreshToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,6 +31,10 @@ const UserSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
+      select: false,
+    },
+    refreshToken: {
+      type: String,
     },
     contractorType: {
       type: String,
