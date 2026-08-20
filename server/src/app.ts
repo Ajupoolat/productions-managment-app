@@ -3,6 +3,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import env from './configs/env.config';
 import { errorHandler } from './middlewares/error.middleware';
+import routes from './routes';
+
 
 const app = express();
 
@@ -21,7 +23,6 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'success', message: 'API is running successfully!' });
 });
 
-import routes from './routes';
 
 // API Routes will be mounted here
 app.use('/api', routes);

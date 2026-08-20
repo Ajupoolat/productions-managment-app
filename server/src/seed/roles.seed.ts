@@ -47,14 +47,12 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
   ],
 
   [SystemRole.CAST]: [
-    'onboarding.view',
     'productions.view',
     'cast.view',
     'notifications.view',
   ],
 
   [SystemRole.CREW]: [
-    'onboarding.view',
     'productions.view',
     'crew.view',
     'notifications.view',

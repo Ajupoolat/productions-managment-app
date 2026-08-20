@@ -8,6 +8,7 @@ const setCookies = (res: Response, accessToken: string, refreshToken: string) =>
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
+    path: '/',
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
@@ -15,22 +16,23 @@ const setCookies = (res: Response, accessToken: string, refreshToken: string) =>
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
+    path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 };
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { user, accessToken, refreshToken } = await authService.register(req.body);
-  setCookies(res, accessToken, refreshToken);
+  const { user } = await authService.register(req.body);
 
   res.status(201).json({
     success: true,
-    message: 'Registration successful',
+    message: 'Registration successful. Please log in to continue.',
     data: { user },
   });
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
+  console.log('the request reach in auth controller:',req.body)
   const { user, accessToken, refreshToken } = await authService.login(req.body);
   setCookies(res, accessToken, refreshToken);
 
@@ -69,5 +71,13 @@ export const logoutHandler = asyncHandler(async (req: Request, res: Response) =>
   res.status(200).json({
     success: true,
     message: 'Logged out successfully',
+  });
+});
+
+export const getMe = asyncHandler(async (req: Request, res: Response) => {
+  // req.user is populated by the `protect` middleware
+  res.status(200).json({
+    success: true,
+    data: { user: req.user },
   });
 });

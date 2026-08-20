@@ -1,25 +1,44 @@
 import bcrypt from 'bcryptjs';
 import * as userRepository from '../repositories/user.repository';
 import { RegisterInput, LoginInput } from '../dto/auth/auth.dto';
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from '../utils/jwt';
 import { AppError } from '../utils/AppError';
 import { IUser } from '../models/user.model';
+
+const sanitizeUser = (user: IUser) => {
+  const userObj = user.toJSON();
+
+  delete userObj.password;
+  delete userObj.refreshToken;
+
+  return userObj;
+};
 
 const generateTokens = async (user: IUser) => {
   const accessToken = generateAccessToken(user._id.toString());
   const refreshToken = generateRefreshToken(user._id.toString());
 
-  await userRepository.updateRefreshToken(user._id.toString(), refreshToken);
+  const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 
-  const userObj = user.toJSON();
-  delete userObj.password;
-  delete userObj.refreshToken;
+  await userRepository.updateRefreshTokenHash(
+    user._id.toString(),
+    hashedRefreshToken
+  );
 
-  return { user: userObj, accessToken, refreshToken };
+  return {
+    user: sanitizeUser(user),
+    accessToken,
+    refreshToken,
+  };
 };
 
 export const register = async (data: RegisterInput) => {
   const existingUser = await userRepository.findByEmail(data.email);
+
   if (existingUser) {
     throw new AppError('Email already in use', 409);
   }
@@ -32,16 +51,21 @@ export const register = async (data: RegisterInput) => {
     password: hashedPassword,
   });
 
-  return generateTokens(user);
+  return {
+    user: sanitizeUser(user),
+  };
 };
 
 export const login = async (data: LoginInput) => {
+  console.log('the request reach in auth service:',data)
   const user = await userRepository.findByEmail(data.email, true);
+
   if (!user || !user.password) {
     throw new AppError('Invalid email or password', 401);
   }
 
   const isMatch = await bcrypt.compare(data.password, user.password);
+
   if (!isMatch) {
     throw new AppError('Invalid email or password', 401);
   }
@@ -52,18 +76,28 @@ export const login = async (data: LoginInput) => {
 export const refreshTokens = async (currentRefreshToken: string) => {
   try {
     const decoded = verifyRefreshToken(currentRefreshToken);
+
     const user = await userRepository.findById(decoded.userId);
 
-    if (!user || user.refreshToken !== currentRefreshToken) {
+    if (!user || !user.refreshTokenHash) {
+      throw new AppError('Invalid refresh token', 401);
+    }
+
+    const isValid = await bcrypt.compare(
+      currentRefreshToken,
+      user.refreshTokenHash
+    );
+
+    if (!isValid) {
       throw new AppError('Invalid refresh token', 401);
     }
 
     return generateTokens(user);
-  } catch (error) {
+  } catch {
     throw new AppError('Invalid refresh token', 401);
   }
 };
 
 export const logout = async (userId: string) => {
-  await userRepository.updateRefreshToken(userId, null);
+  await userRepository.updateRefreshTokenHash(userId, null);
 };

@@ -5,6 +5,7 @@ export interface IDocument extends Document {
   type: string;
   url: string;
   fileName: string;
+  publicId: string;
   uploadedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -26,6 +27,10 @@ const DocumentSchema = new Schema<IDocument>(
       required: true,
     },
     fileName: {
+      type: String,
+      required: true,
+    },
+    publicId: {
       type: String,
       required: true,
     },

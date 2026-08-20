@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { verifyAccessToken } from '../utils/jwt';
 import { AppError } from '../utils/AppError';
 import { User, IUser } from '../models/user.model';
+import { IRole } from '../models/role.model';
+import '../models/permission.model';
 import { asyncHandler } from '../utils/asyncHandler';
 
 // Extend Express Request interface to include user
@@ -50,9 +52,30 @@ export const protect = asyncHandler(async (req: Request, res: Response, next: Ne
     req.user = currentUser;
     next();
   } catch (error: any) {
+    console.error('[AUTH DEBUG] Token verification FAILED:', error.name, error.message);
     if (error.name === 'TokenExpiredError') {
       return next(new AppError('Your access token has expired! Please refresh it.', 401));
     }
     return next(new AppError('Invalid token. Please log in again!', 401));
   }
 });
+
+/**
+ * Restrict access to specific roles.
+ * Must be used AFTER the `protect` middleware.
+ */
+export const restrictTo = (role:string) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const userRole = (req.user?.roleId as unknown as IRole)?.name;
+    
+    console.log('the backend userole:', userRole,role)
+    if (!userRole || userRole!=role) {
+      console.log('the backend roles:', role)
+      return next(
+        new AppError('You do not have permission to perform this action', 403)
+      );
+    }
+
+    next();
+  };
+};
