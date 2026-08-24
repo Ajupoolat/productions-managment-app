@@ -38,6 +38,15 @@ export interface OnboardingApplicationPayload {
   signature?: string;
 }
 
+export interface DocumentInfo {
+  _id: string;
+  type: string;
+  url: string;
+  publicId?: string;
+  fileName?: string;
+  createdAt?: string;
+}
+
 export interface OnboardingApplication extends OnboardingApplicationPayload {
   _id: string;
   userId: {
@@ -46,10 +55,18 @@ export interface OnboardingApplication extends OnboardingApplicationPayload {
     email: string;
     status: string;
   };
-  status: string;
+  status: OnboardingApplicationStatus;
   reviewedBy?: string;
   reviewedAt?: string;
   reviewComments?: string;
   createdAt: string;
   updatedAt: string;
+  documents?: DocumentInfo[];
 }
+
+
+export type OnboardingApplicationStatus =
+  | 'PENDING'
+  | 'APPROVED'
+  | 'REJECTED'
+  | 'CHANGES_REQUESTED';

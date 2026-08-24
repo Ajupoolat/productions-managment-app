@@ -11,6 +11,7 @@ import {
   Shield,
   KeyRound,
   FileText,
+  User,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -43,6 +44,11 @@ export const userNavigationSections: NavigationSection[] = [
         label: 'Dashboard',
         path: '/',
         icon: LayoutDashboard,
+      },
+      {
+        label: 'My Profile',
+        path: '/profile',
+        icon: User,
       },
     ],
   },
@@ -104,6 +110,11 @@ export const adminNavigationSections: NavigationSection[] = [
         label: 'Admin Dashboard',
         path: '/admin',
         icon: LayoutDashboard,
+      },
+      {
+        label: 'My Profile',
+        path: '/admin/profile',
+        icon: User,
       },
     ],
   },

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-
+import type { OnboardingApplication } from '../../../shared/types/onboarding.types';
 import * as adminService from '../services/admin.service';
 
 export function useApplicationReview(id?: string) {
   const navigate = useNavigate();
 
-  const [application, setApplication] = useState<any>(null);
+  const [application, setApplication] = useState<OnboardingApplication>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchApplication = useCallback(async () => {

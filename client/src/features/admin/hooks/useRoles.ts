@@ -1,17 +1,12 @@
 import { useState, useEffect } from 'react';
 import * as adminService from '../services/admin.service';
 import { toast } from 'sonner';
+import type { Role } from '../../../shared/types/roles.types';
 
-export interface Role {
-  _id: string;
-  name: string;
-  description?: string;
-  isActive: boolean;
-}
 
 export const useRoles = () => {
   const [roles, setRoles] = useState<Role[]>([]);
-  const [isLoadingRoles, setIsLoadingRoles] = useState(true);
+  const [isLoadingRoles, setIsLoadingRoles] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchRoles = async () => {

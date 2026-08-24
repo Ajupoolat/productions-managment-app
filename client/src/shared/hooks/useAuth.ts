@@ -10,7 +10,7 @@ export const useAuth = () => {
   const user = useAppStore((state) => state.user);
   const isAuthenticated = useAppStore((state) => state.isAuthenticated);
   const isLoading = useAppStore((state) => state.isLoading);
-  const hasOnboardingApplication = useAppStore((state) => state.hasOnboardingApplication);
+  const onboardingApplication = useAppStore((state) => state.onboardingApplication);
   const logout = useAppStore((state) => state.logout);
 
   const { hasPermission, hasAnyPermission } = usePermission();
@@ -23,7 +23,7 @@ export const useAuth = () => {
     user,
     isAuthenticated,
     isLoading,
-    hasOnboardingApplication,
+    onboardingApplication,
     logout,
     hasPermission,
     hasAnyPermission,

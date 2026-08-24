@@ -19,6 +19,7 @@ const ApplicationReviewPage = lazy(
 const UsersPage = lazy(
   () => import('../../features/users/pages/UsersPage')
 );
+const ProfilePage = lazy(() => import('../../features/profile/pages/ProfilePage'));
 const RolesPage = lazy(
   () => import('../../features/roles/pages/RolesPage')
 );
@@ -55,6 +56,11 @@ export const adminRoutes: RouteObject = {
         {
           index: true,
           element: <DashboardPage />,
+        },
+        // Profile
+        {
+          path: 'profile',
+          element: <ProfilePage />,
         },
 
         // Onboarding Reviews

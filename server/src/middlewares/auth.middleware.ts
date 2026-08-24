@@ -70,7 +70,6 @@ export const restrictTo = (role:string) => {
     
     console.log('the backend userole:', userRole,role)
     if (!userRole || userRole!=role) {
-      console.log('the backend roles:', role)
       return next(
         new AppError('You do not have permission to perform this action', 403)
       );

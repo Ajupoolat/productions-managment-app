@@ -31,7 +31,6 @@ export const submitApplication = async (
       status: OnboardingStatus.PENDING,
     });
   }
-
   if (application && files && files.length > 0 && data.documentsMetadata) {
     // Delete old documents if re-submitting after REJECTED/CHANGES_REQUESTED
     if (existingApp) {
@@ -58,7 +57,6 @@ export const submitApplication = async (
         fileName: file.originalname,
       };
     });
-
     await documentRepository.createMany(documentDocs);
   }
 
@@ -67,10 +65,18 @@ export const submitApplication = async (
 
 export const getMyApplication = async (userId: string) => {
   const application = await onboardingRepository.findByUserId(userId);
+  
   if (!application) {
     throw new AppError('No onboarding application found.', 404);
   }
-  return application;
+
+  const documents = await documentRepository.findByOnboardingId(application._id as Types.ObjectId);
+  
+  // Convert Mongoose document to plain object to attach properties
+  const appObj = application.toObject();
+  appObj.documents = documents;
+  
+  return appObj;
 };
 
 export const getAllApplications = async () => {
@@ -82,7 +88,13 @@ export const getApplicationById = async (id: string) => {
   if (!application) {
     throw new AppError('Onboarding application not found.', 404);
   }
-  return application;
+
+  const documents = await documentRepository.findByOnboardingId(application._id as Types.ObjectId);
+  
+  const appObj = application.toObject();
+  appObj.documents = documents;
+
+  return appObj;
 };
 
 export const reviewApplication = async (id: string, adminId: string, data: OnboardingReviewInput) => {
@@ -92,8 +104,8 @@ export const reviewApplication = async (id: string, adminId: string, data: Onboa
     throw new AppError('Onboarding application not found.', 404);
   }
 
-  if (application.status === OnboardingStatus.APPROVED) {
-    throw new AppError('This application has already been approved.', 400);
+  if (data.status === OnboardingStatus.APPROVED && !data.roleId) {
+    throw new AppError('A role must be assigned to approve the application.', 400);
   }
 
   const updatedApplication = await onboardingRepository.updateStatus(
@@ -103,17 +115,19 @@ export const reviewApplication = async (id: string, adminId: string, data: Onboa
     data.reviewComments
   );
 
-  // If approved, update the user's contractorType and System Role
-  if (data.status === OnboardingStatus.APPROVED && updatedApplication) {
-    const userUpdatePayload: any = {
-      contractorType: updatedApplication.contractorType
-    };
-    
-    if (data.roleId) {
-      userUpdatePayload.roleId = data.roleId;
+  if (updatedApplication) {
+    if (data.status === OnboardingStatus.APPROVED) {
+      // If approved, update the user's contractorType and System Role
+      await userRepository.update(updatedApplication.userId.toString(), {
+        contractorType: updatedApplication.contractorType,
+        roleId: data.roleId as unknown as Types.ObjectId
+      });
+    } else if (data.status === OnboardingStatus.CHANGES_REQUESTED || data.status === OnboardingStatus.REJECTED) {
+      // If rejected or changes requested, clear their role so they lose access
+      await userRepository.update(updatedApplication.userId.toString(), {
+        roleId: null as unknown as Types.ObjectId
+      });
     }
-    
-    await userRepository.update(updatedApplication.userId.toString(), userUpdatePayload);
   }
 
   return updatedApplication;

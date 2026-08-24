@@ -25,6 +25,9 @@ const CastPage = lazy(
 const CrewPage = lazy(
   () => import('../../features/admin/pages/CrewPage')
 );
+const UnauthorizedPage = lazy(() => import('../../shared/components/UnauthorizedPage'));
+
+const ProfilePage = lazy(() => import('../../features/profile/pages/ProfilePage'));
 const LocationsPage = lazy(
   () => import('../../features/locations/pages/LocationsPage')
 );
@@ -52,6 +55,11 @@ export const protectedRoutes: RouteObject = {
         {
           path: '/',
           element: <DashboardPage />,
+        },
+        // Profile — always accessible to authenticated users with a role
+        {
+          path: '/profile',
+          element: <ProfilePage />,
         },
 
         // Productions

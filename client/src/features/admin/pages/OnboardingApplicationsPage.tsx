@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Loader2, Search, FileText } from 'lucide-react';
-
+import { Search, FileText } from 'lucide-react';
+import LoadingSpinner from '../../../shared/components/ui/Loading/LoadingSpinner';
 import { useOnboardingApplications } from '../hooks/useOnboardingApplications';
 import { getApplicationStatusColor } from '../utils/status.utils';
 
@@ -11,14 +11,7 @@ export default function OnboardingApplicationsPage() {
   } = useOnboardingApplications();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2
-          className="animate-spin text-primary"
-          size={32}
-        />
-      </div>
-    );
+    <LoadingSpinner />
   }
 
   return (

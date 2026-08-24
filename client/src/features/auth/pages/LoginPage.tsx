@@ -2,6 +2,8 @@
 import { Link } from 'react-router-dom';
 import { LogIn, Loader2 } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
+import { FormField } from '../../../shared/components/ui/Form/FormField';
+import { Input } from '../../../shared/components/ui/Form/Inputs';
 
 export default function LoginPage() {
 
@@ -26,31 +28,23 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
-            <input
+          <FormField label="Email" error={errors.email?.message}>
+            <Input
               {...register('email')}
               type="email"
-              className="input-field"
               placeholder="john@example.com"
+              error={!!errors.email}
             />
-            {errors.email && (
-              <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>
-            )}
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
-            <input
+          <FormField label="Password" error={errors.password?.message}>
+            <Input
               {...register('password')}
               type="password"
-              className="input-field"
               placeholder="••••••••"
+              error={!!errors.password}
             />
-            {errors.password && (
-              <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>
-            )}
-          </div>
+          </FormField>
 
           <button
             type="submit"

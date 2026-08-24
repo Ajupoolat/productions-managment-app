@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CONTRACTOR_TYPES } from '../types/onboarding.types';
+import { CONTRACTOR_TYPES } from '../../../shared/types/onboarding.types';
 
 export const onboardingSchema = z.object({
   contractorType: z.enum(CONTRACTOR_TYPES, {

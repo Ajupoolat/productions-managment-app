@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { UserPlus, Loader2 } from 'lucide-react';
 
 import { useSignup } from '../hooks/useSignup';
+import { FormField } from '../../../shared/components/ui/Form/FormField';
+import { Input } from '../../../shared/components/ui/Form/Inputs';
 
 export default function SignupPage() {
   const {
@@ -33,81 +35,41 @@ export default function SignupPage() {
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4"
         >
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
-              Full Name
-            </label>
-
-            <input
+          <FormField label="Full Name" error={errors.fullName?.message}>
+            <Input
               {...register('fullName')}
               type="text"
-              className="input-field"
               placeholder="John Doe"
+              error={!!errors.fullName}
             />
+          </FormField>
 
-            {errors.fullName && (
-              <p className="text-red-400 text-xs mt-1">
-                {errors.fullName.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
-              Email
-            </label>
-
-            <input
+          <FormField label="Email" error={errors.email?.message}>
+            <Input
               {...register('email')}
               type="email"
-              className="input-field"
               placeholder="john@example.com"
+              error={!!errors.email}
             />
+          </FormField>
 
-            {errors.email && (
-              <p className="text-red-400 text-xs mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
-              Password
-            </label>
-
-            <input
+          <FormField label="Password" error={errors.password?.message}>
+            <Input
               {...register('password')}
               type="password"
-              className="input-field"
               placeholder="••••••••"
+              error={!!errors.password}
             />
+          </FormField>
 
-            {errors.password && (
-              <p className="text-red-400 text-xs mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
-              Confirm Password
-            </label>
-
-            <input
+          <FormField label="Confirm Password" error={errors.confirmPassword?.message}>
+            <Input
               {...register('confirmPassword')}
               type="password"
-              className="input-field"
               placeholder="••••••••"
+              error={!!errors.confirmPassword}
             />
-
-            {errors.confirmPassword && (
-              <p className="text-red-400 text-xs mt-1">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
+          </FormField>
 
           <button
             type="submit"

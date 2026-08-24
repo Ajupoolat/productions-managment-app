@@ -91,7 +91,7 @@ const OnboardingApplicationSchema =
         accountNumber: {
           type: String,
           required: true,
-          select: false,
+          select: true,
         },
 
         ifscCode: {
@@ -99,7 +99,7 @@ const OnboardingApplicationSchema =
           required: true,
           uppercase: true,
           trim: true,
-          select: false,
+          select: true,
         },
       },
 

@@ -32,11 +32,9 @@ export function useLogin() {
       toast.success('Logged in successfully');
 
       const loggedUser = response.data.user;
-     
-      const isAdmin = loggedUser.roleId.name === SystemRole.SUPER_ADMIN;
 
+      const isAdmin = loggedUser?.roleId?.name === SystemRole.SUPER_ADMIN;
       if (isAdmin) {
-        console.log('the admin route is working')
         navigate('/admin');
       } else {
         navigate('/');
@@ -45,7 +43,6 @@ export function useLogin() {
       const message = isAxiosError(error)
         ? error.response?.data?.message
         : undefined;
-
       toast.error(message || 'Login failed');
     } finally {
       setIsLoading(false);

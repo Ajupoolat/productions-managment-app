@@ -20,10 +20,25 @@ export function useOnboardingForm({
   const checkAuth = useAppStore(
     (state) => state.checkAuth
   );
+  
+  const onboardingApplication = useAppStore(
+    (state) => state.onboardingApplication
+  );
 
   const form = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
     mode: 'onTouched',
+    defaultValues: onboardingApplication ? {
+      contractorType: onboardingApplication.contractorType as any,
+      fullName: onboardingApplication.personalInformation?.fullName || '',
+      phone: onboardingApplication.personalInformation?.phone || '',
+      address: onboardingApplication.personalInformation?.address || '',
+      accountHolderName: onboardingApplication.financialInformation?.accountHolderName || '',
+      bankName: onboardingApplication.financialInformation?.bankName || '',
+      accountNumber: onboardingApplication.financialInformation?.accountNumber || '',
+      ifscCode: onboardingApplication.financialInformation?.ifscCode || '',
+      signature: onboardingApplication.signature || '',
+    } : undefined,
   });
 
   const onSubmit = async (data: OnboardingFormValues, files: File[], documentsMetadata: { type: string, fileName: string }[]) => {

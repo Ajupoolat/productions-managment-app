@@ -11,7 +11,7 @@ import { useAuth } from '../hooks/useAuth';
  *  - Users with a roleId are blocked from visiting /onboarding
  */
 export default function ProtectedRoute() {
-  const { isAuthenticated, isLoading, user, hasOnboardingApplication } = useAuth();
+  const { isAuthenticated, isLoading, user, onboardingApplication } = useAuth();
   const location = useLocation();
 
   // Wait for checkAuth() to finish before deciding
@@ -26,16 +26,26 @@ export default function ProtectedRoute() {
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-
   // Intercept users who haven't completed onboarding or haven't been approved yet (roleId is null)
   if (!user?.roleId) {
-    // If they already submitted the app, they MUST go to /onboarding/status
-    if (hasOnboardingApplication && location.pathname !== '/onboarding/status') {
-      return <Navigate to="/onboarding/status" replace />;
-    }
-    // If they haven't submitted the app, they MUST go to /onboarding
-    if (!hasOnboardingApplication && location.pathname !== '/onboarding') {
-      return <Navigate to="/onboarding" replace />;
+    if (onboardingApplication) {
+      if (onboardingApplication.status === 'CHANGES_REQUESTED') {
+        // If changes requested, allow them to visit either /onboarding/status OR /onboarding
+        if (location.pathname !== '/onboarding/status' && location.pathname !== '/onboarding') {
+          return <Navigate to="/onboarding/status" replace />;
+        }
+      } else {
+        // If PENDING (or somehow APPROVED but role is null), force to /onboarding/status
+        if (location.pathname !== '/onboarding/status') {
+          return <Navigate to="/onboarding/status" replace />;
+        }
+      }
+    } else {
+      // If they haven't submitted the app, they MUST go to /onboarding
+      console.log('is this is working')
+      if (location.pathname !== '/onboarding') {
+        return <Navigate to="/onboarding" replace />;
+      }
     }
   } else {
     // If they ARE onboarded and approved, they shouldn't be visiting the onboarding flow

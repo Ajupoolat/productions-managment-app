@@ -32,7 +32,6 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
-  console.log('the request reach in auth controller:',req.body)
   const { user, accessToken, refreshToken } = await authService.login(req.body);
   setCookies(res, accessToken, refreshToken);
 
