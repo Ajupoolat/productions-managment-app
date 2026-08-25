@@ -8,17 +8,13 @@ import { uploadDocuments, parseFormData } from '../middlewares/upload.middleware
 
 const router = Router();
 
-// ==========================================
-// User Routes (Authenticated Users)
-// ==========================================
-router.use(protect); // All routes require authentication
 
+router.use(protect); 
 router.get('/me', onboardingController.getMyApplication);
 
 
 
-// In a real app, /me/submit and /me (PUT) might be separated, but for now we follow the simple requirement
-// of creating/submitting the onboarding application.
+
 router.post(
   '/',
   uploadDocuments.array('documents', 2),
@@ -27,15 +23,12 @@ router.post(
   onboardingController.submitApplication
 );
 
-// ==========================================
-// Admin Routes (Requires specific permissions)
-// ==========================================
+
 router.use('/admin', requirePermission('onboarding.view'));
 
 router.get('/admin', onboardingController.getAllApplications);
 router.get('/admin/:id', onboardingController.getApplicationById);
 
-// Reviewing (Approve/Reject) requires a higher permission
 router.patch(
   '/admin/:id/review',
   requirePermission('onboarding.approve', 'onboarding.reject'),

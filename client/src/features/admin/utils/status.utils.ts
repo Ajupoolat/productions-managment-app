@@ -1,4 +1,4 @@
-import type { OnboardingApplicationStatus } from '../types/admin.types';
+import type { OnboardingApplicationStatus } from "../../../shared/types/onboarding.types";
 
 export function getApplicationStatusColor(
   status: OnboardingApplicationStatus

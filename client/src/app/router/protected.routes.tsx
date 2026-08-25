@@ -19,13 +19,15 @@ const OnboardingStatusPage = lazy(
 const ProductionsPage = lazy(
   () => import('../../features/productions/pages/ProductionsPage')
 );
+const ProductionDetailsPage = lazy(
+  () => import('../../features/productions/pages/ProductionDetailsPage')
+);
 const CastPage = lazy(
   () => import('../../features/admin/pages/CastPage')
 );
 const CrewPage = lazy(
   () => import('../../features/admin/pages/CrewPage')
 );
-const UnauthorizedPage = lazy(() => import('../../shared/components/UnauthorizedPage'));
 
 const ProfilePage = lazy(() => import('../../features/profile/pages/ProfilePage'));
 const LocationsPage = lazy(
@@ -67,6 +69,7 @@ export const protectedRoutes: RouteObject = {
           element: <PermissionGuard requiredPermission="productions.view" />,
           children: [
             { path: 'productions', element: <ProductionsPage /> },
+            { path: 'productions/:id', element: <ProductionDetailsPage /> },
           ],
         },
 

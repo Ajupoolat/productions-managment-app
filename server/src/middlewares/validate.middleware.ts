@@ -6,13 +6,16 @@ import { ZodError, ZodSchema } from 'zod';
 export const validateInputs = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
+      console.log(' the data from client :',req.body)
       const validatedData = schema.parse(req.body);
+      console.log('the validated data :',validatedData)
       req.body = validatedData;
 
       console.log(`Inputs: ${JSON.stringify(req.body)}`);
 
       next();
     } catch (error) {
+      console.log('the error why:',error)
       next(error);
     }
   };

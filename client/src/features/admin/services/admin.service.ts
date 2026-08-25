@@ -1,9 +1,12 @@
 import apiClient from '../../../services/apiClient';
 import { API_ROUTES } from '../../../constants/api-routes';
 
-export const getAllApplications = async () => {
-  const { data } = await apiClient.get(API_ROUTES.ONBOARDING.ADMIN_LIST);
-  return data.data.applications;
+export const getAllApplications = async (params?: any) => {
+  const { data } = await apiClient.get(API_ROUTES.ONBOARDING.ADMIN_LIST, { params });
+  return {
+    applications: data.data.applications,
+    meta: data.meta
+  };
 };
 
 export const getApplicationById = async (id: string) => {

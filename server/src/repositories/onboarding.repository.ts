@@ -1,5 +1,6 @@
 import { OnboardingApplication, IOnboardingApplication } from '../models/onboarding.model';
 import { Types } from 'mongoose';
+import { ApiFeatures } from '../utils/apiFeatures';
 
 export const create = async (data: Partial<IOnboardingApplication>): Promise<IOnboardingApplication> => {
   return OnboardingApplication.create(data);
@@ -24,8 +25,21 @@ export const updateByUserId = async (
   );
 };
 
-export const findAll = async (): Promise<IOnboardingApplication[]> => {
-  return OnboardingApplication.find().populate('userId', 'fullName email status').sort({ createdAt: -1 });
+export const findAll = async (queryString: any = {}): Promise<{ data: IOnboardingApplication[], meta: any }> => {
+  const query = OnboardingApplication.find().populate('userId', 'fullName email status');
+  
+  const features = new ApiFeatures(query, queryString)
+    .filter()
+    .search(['personalInformation.fullName', 'personalInformation.phone', 'contractorType'])
+    .sort();
+
+  await features.countTotal();
+  features.paginate();
+
+  const data = await features.query;
+  const meta = features.getPaginationMeta();
+
+  return { data, meta };
 };
 
 export const updateStatus = async (

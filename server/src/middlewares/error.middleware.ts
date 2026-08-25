@@ -11,10 +11,12 @@ export const errorHandler = (
 ): void => {
   // ── Zod Validation Errors ──────────────────────────────────────────────────
   if (err instanceof ZodError) {
+    console.log('this is zod validation err:',err)
     const formattedErrors = err.issues.map((e) => ({
       field: e.path.join('.'),
       message: e.message,
     }));
+    console.log('this is formatted errors:',formattedErrors)
 
     res.status(400).json({
       success: false,

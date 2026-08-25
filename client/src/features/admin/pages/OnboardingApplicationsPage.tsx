@@ -1,43 +1,53 @@
 import { Link } from 'react-router-dom';
-import { Search, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import LoadingSpinner from '../../../shared/components/ui/Loading/LoadingSpinner';
 import { useOnboardingApplications } from '../hooks/useOnboardingApplications';
 import { getApplicationStatusColor } from '../utils/status.utils';
+import { useQueryParams } from '../../../shared/hooks/useQueryParams';
+import { SearchBar } from '../../../shared/components/ui/DataView/SearchBar';
+import { FilterDropdown } from '../../../shared/components/ui/DataView/FilterDropdown';
+import { Pagination } from '../../../shared/components/ui/DataView/Pagination';
+import { onboardingStatus } from '../../../constants/onboarding-status';
+
 
 export default function OnboardingApplicationsPage() {
+  const { paramsObject } = useQueryParams();
+  
   const {
     applications,
     isLoading,
-  } = useOnboardingApplications();
+    meta
+  } = useOnboardingApplications(paramsObject);
 
   if (isLoading) {
-    <LoadingSpinner />
+    return <LoadingSpinner />;
   }
+
+  const statusOptions = Object.values(onboardingStatus).map(status => ({
+    label: status.replace(/_/g, ' '),
+    value: status
+  }));
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold">
             Onboarding Applications
           </h1>
-
           <p className="text-slate-400 mt-1">
             Review and manage new team members
           </p>
         </div>
 
-        <div className="relative">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-            size={18}
+        <div className="flex items-center gap-4">
+          <FilterDropdown 
+            paramKey="status" 
+            options={statusOptions} 
+            placeholder="All Statuses"
+            className="w-40"
           />
-
-          <input
-            type="text"
-            placeholder="Search applications..."
-            className="input-field pl-10 w-64"
-          />
+          <SearchBar placeholder="Search applicants..." />
         </div>
       </div>
 
@@ -136,6 +146,10 @@ export default function OnboardingApplicationsPage() {
           </tbody>
         </table>
       </div>
+      
+      {meta && meta.totalPages > 1 && (
+        <Pagination totalPages={meta.totalPages} />
+      )}
     </div>
   );
 }

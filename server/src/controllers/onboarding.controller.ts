@@ -26,11 +26,12 @@ export const getMyApplication = asyncHandler(async (req: Request, res: Response)
 });
 
 export const getAllApplications = asyncHandler(async (req: Request, res: Response) => {
-  const applications = await onboardingService.getAllApplications();
+  const { data: applications, meta } = await onboardingService.getAllApplications(req.query);
   
   res.status(200).json({
     success: true,
     data: { applications },
+    meta
   });
 });
 

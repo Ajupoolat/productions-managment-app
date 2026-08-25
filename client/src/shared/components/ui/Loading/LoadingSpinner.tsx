@@ -1,14 +1,24 @@
 
-import { Loader2 } from "lucide-react";
+import { Loader2 } from 'lucide-react';
 
-export default function LoadingSpinner({ size = 32 }: { size?: number }) {
-    return (
-        <div className="min-h-screen flex items-center justify-center">
-            <Loader2
-                className="animate-spin text-primary"
-                size={size}
-            />
-        </div>
-    );
+interface LoadingSpinnerProps {
+  size?: number;
+  className?: string;
+  classNameContainer?:string;
+}
+
+export default function LoadingSpinner({
+  size = 32,
+  className = '',
+  classNameContainer='h-screen-min'
+}: LoadingSpinnerProps) {
+  return (
+    <div className={`flex items-center justify-center ${classNameContainer}`}>
+      <Loader2
+        size={size}
+        className={`animate-spin text-primary ${className}`}
+      />
+    </div>
+  );
 }
 

@@ -79,8 +79,8 @@ export const getMyApplication = async (userId: string) => {
   return appObj;
 };
 
-export const getAllApplications = async () => {
-  return onboardingRepository.findAll();
+export const getAllApplications = async (query: any = {}) => {
+  return onboardingRepository.findAll(query);
 };
 
 export const getApplicationById = async (id: string) => {

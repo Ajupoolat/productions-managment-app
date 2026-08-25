@@ -26,8 +26,11 @@ const RolesPage = lazy(
 const PermissionsPage = lazy(
   () => import('../../features/permissions/pages/PermissionsPage')
 );
-const ProductionsPage = lazy(
-  () => import('../../features/productions/pages/ProductionsPage')
+const AdminProductionsPage = lazy(
+  () => import('../../features/admin/pages/AdminProductionsPage')
+);
+const AdminProductionDetailsPage = lazy(
+  () => import('../../features/admin/pages/AdminProductionDetailsPage')
 );
 const LocationsPage = lazy(
   () => import('../../features/locations/pages/LocationsPage')
@@ -100,7 +103,8 @@ export const adminRoutes: RouteObject = {
         {
           element: <PermissionGuard requiredPermission="productions.view" />,
           children: [
-            { path: 'productions', element: <ProductionsPage /> },
+            { path: 'productions', element: <AdminProductionsPage /> },
+            { path: 'productions/:id', element: <AdminProductionDetailsPage /> },
           ],
         },
 
