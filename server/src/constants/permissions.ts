@@ -59,4 +59,7 @@ export const PERMISSIONS = [
 
   // NOTIFICATIONS
   { key: 'notifications.view', module: 'notifications', action: 'view', description: 'View notifications' },
+  
+  // MY WORK (Talent/Crew)
+  { key: 'my_work.view', module: 'my_work', action: 'view', description: 'View assigned productions and roles' },
 ] as const;

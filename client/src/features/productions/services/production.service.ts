@@ -29,3 +29,23 @@ export const updateProduction = async (id: string, data: CreateProductionValues)
 export const deleteProduction = async (id: string): Promise<void> => {
   await apiClient.delete(`/productions/${id}`);
 };
+
+export const assignCast = async (productionId: string, data: { userId: string, characterId: string }): Promise<any> => {
+  const response = await apiClient.post(`/productions/${productionId}/cast`, data);
+  return response.data.data.assignment;
+};
+
+export const getCastAssignments = async (productionId: string): Promise<any[]> => {
+  const response = await apiClient.get(`/productions/${productionId}/cast`);
+  return response.data.data.assignments;
+};
+
+export const assignCrew = async (productionId: string, data: { userId: string, departmentId: string, workId: string }): Promise<any> => {
+  const response = await apiClient.post(`/productions/${productionId}/crew`, data);
+  return response.data.data.assignment;
+};
+
+export const getCrewAssignments = async (productionId: string): Promise<any[]> => {
+  const response = await apiClient.get(`/productions/${productionId}/crew`);
+  return response.data.data.assignments;
+};

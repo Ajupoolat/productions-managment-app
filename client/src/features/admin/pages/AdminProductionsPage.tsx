@@ -10,15 +10,13 @@ import { SearchBar } from '../../../shared/components/ui/DataView/SearchBar';
 import { FilterDropdown } from '../../../shared/components/ui/DataView/FilterDropdown';
 import { Pagination } from '../../../shared/components/ui/DataView/Pagination';
 import { ProductionStatus } from '../../../constants/production-status';
+import { enumToOptions } from '../../../shared/utils/enumToOptions';
 
 export default function AdminProductionsPage() {
   const { paramsObject } = useQueryParams();
   const { productions, isLoading, meta } = useAdminProductions(undefined, paramsObject);
 
-  const statusOptions = Object.values(ProductionStatus).map(status => ({
-    label: status.replace(/_/g, ' '),
-    value: status
-  }));
+  const statusOptions = enumToOptions(Object.values(ProductionStatus));
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
@@ -30,7 +28,7 @@ export default function AdminProductionsPage() {
           <h1 className="text-2xl font-bold text-white">All Productions</h1>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
           <FilterDropdown 
             paramKey="status" 
             options={statusOptions} 
@@ -72,7 +70,7 @@ export default function AdminProductionsPage() {
                   </td>
                   <td className="p-4 text-slate-400">
                     {typeof production.productionManagerId === 'object' && production.productionManagerId !== null
-                      ? `${production.productionManagerId.firstName} ${production.productionManagerId.lastName}`
+                      ? `${production.productionManagerId.email}`
                       : 'Unknown'}
                   </td>
                   <td className="p-4 text-slate-400 hidden md:table-cell">

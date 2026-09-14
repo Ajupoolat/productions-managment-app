@@ -1,6 +1,5 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../shared/hooks/useAuth';
-import { usePermission } from '../../shared/hooks/usePermission';
 import {
   userNavigationSections,
   adminNavigationSections,
@@ -17,8 +16,7 @@ import { useState } from 'react';
  * It detects whether we are in the /admin area and shows the correct navigation.
  */
 export default function DashboardLayout() {
-  const { user, logout } = useAuth();
-  const { hasPermission } = usePermission();
+  const { user, logout, hasPermission, hasRole } = useAuth();
   const location = useLocation();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
@@ -33,9 +31,25 @@ export default function DashboardLayout() {
   const visibleSections = sections
     .map((section): NavigationSection => ({
       ...section,
-      items: section.items.filter(
-        (item) => !item.permission || hasPermission(item.permission)
-      ),
+      items: section.items.filter((item) => {
+        // 1. Check basic permissions
+        const passesPermission = !item.permission || hasPermission(item.permission);
+        if (!passesPermission) return false;
+
+        // 2. Check explicitly required roles
+        if (item.roles && item.roles.length > 0) {
+          const hasRequiredRole = item.roles.some((r) => hasRole(r));
+          if (!hasRequiredRole) return false;
+        }
+
+        // 3. Check explicitly excluded roles
+        if (item.excludeRoles && item.excludeRoles.length > 0) {
+          const hasExcludedRole = item.excludeRoles.some((r) => hasRole(r));
+          if (hasExcludedRole) return false;
+        }
+
+        return true;
+      }),
     }))
     .filter((section) => section.items.length > 0);
 

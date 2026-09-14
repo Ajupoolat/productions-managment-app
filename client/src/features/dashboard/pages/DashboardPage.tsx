@@ -6,8 +6,10 @@ import { QuickLinks } from '../../../constants/quick-links';
 
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, hasRole } = useAuth();
   const { hasPermission } = usePermission();
+
+  const isCastOrCrew = hasRole('CAST') || hasRole('CREW');
 
   const visibleLinks = QuickLinks.filter((link) =>
     hasPermission(link.permission)
@@ -34,8 +36,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Quick Links Grid */}
-      {visibleLinks.length > 0 && (
+      {/* Quick Links Grid (For Managers) */}
+      {!isCastOrCrew && visibleLinks.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
             Quick Access
@@ -66,7 +68,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {visibleLinks.length === 0 && (
+      {!isCastOrCrew && visibleLinks.length === 0 && (
         <div className="text-center py-16">
           <p className="text-slate-400">
             No modules are currently available for your role.
@@ -74,6 +76,21 @@ export default function DashboardPage() {
           <p className="text-slate-500 text-sm mt-2">
             Contact your administrator if you need additional access.
           </p>
+        </div>
+      )}
+
+      {/* Cast/Crew Specific Dashboard */}
+      {isCastOrCrew && (
+        <div className="space-y-6">
+          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+            Your Productions
+          </h2>
+          <div className="glass-panel p-12 rounded-2xl border border-slate-800/60 text-center">
+            <h3 className="text-lg font-bold text-white mb-2">No production assignments yet.</h3>
+            <p className="text-slate-400">
+              When you are assigned to a production, your character or position details will appear here.
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -29,3 +29,7 @@ export const updateRefreshTokenHash = async (userId: string | Types.ObjectId, re
 export const update = async (userId: string | Types.ObjectId, data: Partial<IUser>): Promise<IUser | null> => {
   return User.findByIdAndUpdate(userId, { $set: data }, { new: true, runValidators: true });
 };
+
+export const findByRoleId = async(roleId:string|Types.ObjectId)=>{
+  return await User.find({roleId,isActive:true}).select('_id fullName email contractorType').populate('roleId', 'name').sort({fullName:1});
+};

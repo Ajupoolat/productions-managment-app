@@ -6,6 +6,7 @@ import { useQueryParams } from '../../../shared/hooks/useQueryParams';
 import { SearchBar } from '../../../shared/components/ui/DataView/SearchBar';
 import { FilterDropdown } from '../../../shared/components/ui/DataView/FilterDropdown';
 import { ProductionStatus } from '../../../constants/production-status';
+import { enumToOptions } from '../../../shared/utils/enumToOptions';
 
 export default function ProductionsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -17,10 +18,7 @@ export default function ProductionsPage() {
     setIsCreateModalOpen(false);
   };
 
-  const statusOptions = Object.values(ProductionStatus).map(status => ({
-    label: status.replace(/_/g, ' '),
-    value: status
-  }));
+  const statusOptions = enumToOptions(Object.values(ProductionStatus));
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
@@ -32,7 +30,7 @@ export default function ProductionsPage() {
           <h1 className="text-2xl font-bold text-white">Productions</h1>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
           <FilterDropdown 
             paramKey="status" 
             options={statusOptions} 

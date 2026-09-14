@@ -19,8 +19,35 @@ const OnboardingStatusPage = lazy(
 const ProductionsPage = lazy(
   () => import('../../features/productions/pages/ProductionsPage')
 );
-const ProductionDetailsPage = lazy(
-  () => import('../../features/productions/pages/ProductionDetailsPage')
+const MyProductionsPage = lazy(
+  () => import('../../features/productions/pages/MyProductionsPage')
+);
+const MyAssignmentsPage = lazy(
+  () => import('../../features/productions/pages/MyAssignmentsPage')
+);
+const RestrictedProductionViewPage = lazy(
+  () => import('../../features/productions/pages/RestrictedProductionViewPage')
+);
+const ProductionDashboardLayout = lazy(
+  () => import('../layouts/ProductionDashboardLayout')
+);
+const ProductionOverviewPage = lazy(
+  () => import('../../features/productions/pages/ProductionOverviewPage')
+);
+const ProductionCastPage = lazy(
+  () => import('../../features/productions/pages/ProductionCastPage')
+);
+const ProductionCrewPage = lazy(
+  () => import('../../features/productions/pages/ProductionCrewPage')
+);
+const ProductionLocationsPage = lazy(
+  () => import('../../features/productions/pages/ProductionLocationsPage')
+);
+const ProductionFundsPage = lazy(
+  () => import('../../features/productions/pages/ProductionFundsPage')
+);
+const ProductionCostumesPage = lazy(
+  () => import('../../features/productions/pages/ProductionCostumesPage')
 );
 const CastPage = lazy(
   () => import('../../features/admin/pages/CastPage')
@@ -63,13 +90,42 @@ export const protectedRoutes: RouteObject = {
           path: '/profile',
           element: <ProfilePage />,
         },
+        // Cast/Crew My Work
+        {
+          element: <PermissionGuard requiredPermission="my_work.view" />,
+          children: [
+            {
+              path: '/my-productions',
+              element: <MyProductionsPage />,
+            },
+            {
+              path: '/my-productions/:id',
+              element: <RestrictedProductionViewPage />,
+            },
+            {
+              path: '/my-assignments',
+              element: <MyAssignmentsPage />,
+            },
+          ],
+        },
 
         // Productions
         {
           element: <PermissionGuard requiredPermission="productions.view" />,
           children: [
             { path: 'productions', element: <ProductionsPage /> },
-            { path: 'productions/:id', element: <ProductionDetailsPage /> },
+            {
+              path: 'productions/:id',
+              element: <ProductionDashboardLayout />,
+              children: [
+                { index: true, element: <ProductionOverviewPage /> },
+                { path: 'cast', element: <ProductionCastPage /> },
+                { path: 'crew', element: <ProductionCrewPage /> },
+                { path: 'locations', element: <ProductionLocationsPage /> },
+                { path: 'funds', element: <ProductionFundsPage /> },
+                { path: 'costumes', element: <ProductionCostumesPage /> },
+              ],
+            },
           ],
         },
 

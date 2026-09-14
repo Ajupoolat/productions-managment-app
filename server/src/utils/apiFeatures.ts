@@ -11,8 +11,10 @@ export class ApiFeatures {
 
   filter() {
     const queryObj = { ...this.queryString };
+
     const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
     excludedFields.forEach((el) => delete queryObj[el]);
+
 
     // Advanced filtering (gte, gt, lte, lt)
     let queryStr = JSON.stringify(queryObj);

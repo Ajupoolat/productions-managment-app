@@ -6,7 +6,6 @@ import {
   MapPin,
   DollarSign,
   Shirt,
-  Bell,
   ClipboardList,
   Shield,
   KeyRound,
@@ -24,6 +23,8 @@ export interface NavigationItem {
   path: string;
   icon: LucideIcon;
   permission?: string;
+  roles?: string[];
+  excludeRoles?: string[];
 }
 
 /**
@@ -53,6 +54,23 @@ export const userNavigationSections: NavigationSection[] = [
     ],
   },
   {
+    title: 'My Work',
+    items: [
+      {
+        label: 'My Productions',
+        path: '/my-productions',
+        icon: Film,
+        roles: ['CAST', 'CREW'],
+      },
+      {
+        label: 'My Assignments',
+        path: '/my-assignments',
+        icon: ClipboardList,
+        roles: ['CAST', 'CREW'],
+      },
+    ],
+  },
+  {
     title: 'Production',
     items: [
       {
@@ -60,6 +78,7 @@ export const userNavigationSections: NavigationSection[] = [
         path: '/productions',
         icon: Film,
         permission: 'productions.view',
+        excludeRoles: ['CAST', 'CREW'],
       },
       {
         label: 'Cast',

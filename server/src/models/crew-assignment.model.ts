@@ -4,8 +4,8 @@ import { CastCrewAssignmentStatus } from '../constants/cast-crew-assigment-statu
 export interface ICrewAssignment extends Document {
   productionId: Types.ObjectId;
   userId: Types.ObjectId;
-  department: string;
-  position: string;
+  departmentId: Types.ObjectId;
+  workId: Types.ObjectId;
   status: CastCrewAssignmentStatus;
   assignedAt?: Date;
   createdAt: Date;
@@ -24,12 +24,14 @@ const CrewAssignmentSchema = new Schema<ICrewAssignment>(
       ref: 'User',
       required: true,
     },
-    department: {
-      type: String,
+    departmentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Department',
       required: true,
     },
-    position: {
-      type: String,
+    workId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Work',
       required: true,
     },
     status: {

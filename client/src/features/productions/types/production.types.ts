@@ -18,3 +18,44 @@ export interface Production {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Character {
+  _id: string;
+  productionId: string;
+  name: string;
+  description?: string;
+}
+
+export interface Department {
+  _id: string;
+  productionId: string;
+  name: string;
+  description?: string;
+}
+
+export interface Work {
+  _id: string;
+  productionId: string;
+  departmentId: string | Department;
+  title: string;
+  description?: string;
+}
+
+export interface CastAssignment {
+  _id: string;
+  productionId: string;
+  userId: any; // User type
+  characterId: Character;
+  status: string;
+  assignedAt: string;
+}
+
+export interface CrewAssignment {
+  _id: string;
+  productionId: string;
+  userId: any; // User type
+  departmentId: Department;
+  workId: Work;
+  status: string;
+  assignedAt: string;
+}

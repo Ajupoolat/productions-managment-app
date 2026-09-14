@@ -23,10 +23,10 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
 
   [SystemRole.PRODUCTION_MANAGER]: [
     'productions.view', 'productions.create', 'productions.update',
-    'cast.view', 'cast.assign',
-    'crew.view', 'crew.assign',
-    'locations.view', 'locations.request',
-    'funds.view', 'funds.request',
+    'cast.assign',
+    'crew.assign',
+    'locations.request',
+    'funds.request',
     'notifications.view',
   ],
 
@@ -47,14 +47,12 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
   ],
 
   [SystemRole.CAST]: [
-    'productions.view',
-    'cast.view',
+    'my_work.view',
     'notifications.view',
   ],
 
   [SystemRole.CREW]: [
-    'productions.view',
-    'crew.view',
+    'my_work.view',
     'notifications.view',
   ],
 };

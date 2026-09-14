@@ -1,6 +1,6 @@
 import { useAppStore } from '../../store/app.store';
 import { usePermission } from './usePermission';
-import type { User } from '../../store/app.store';
+import type { User } from '../types/user.types';
 
 /**
  * useAuth — convenience hook wrapping the global app store's auth selectors.
@@ -14,7 +14,7 @@ export const useAuth = () => {
   const logout = useAppStore((state) => state.logout);
 
   const { hasPermission, hasAnyPermission } = usePermission();
-
+  
   const hasRole = (roleName: string): boolean => {
     return user?.roleId?.name === roleName;
   };
