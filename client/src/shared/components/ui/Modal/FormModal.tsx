@@ -25,7 +25,7 @@ export function FormModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 backdrop-blur-sm bg-black/40 rounded-[17px]">
       <div className="w-full max-w-md p-6 rounded-2xl glass-panel relative animate-in fade-in zoom-in duration-200">
         <button
           onClick={onClose}
@@ -37,7 +37,7 @@ export function FormModal({
 
         <h2 className="text-xl font-bold text-white mb-6">{title}</h2>
 
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-4">  
           {children}
           
           <div className="pt-2">

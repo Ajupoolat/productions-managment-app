@@ -1,6 +1,6 @@
 import apiClient from '../../../services/apiClient';
 
-export const getAvailableTalent = async (type: 'CAST' | 'CREW'): Promise<any[]> => {
-  const response = await apiClient.get('/users/talent', { params: { type } });
+export const getAvailableTalent = async (role: 'CAST' | 'CREW'): Promise<any[]> => {
+  const response = await apiClient.get('/users/talent', { params: { role } });
   return response.data.data.users;
 };

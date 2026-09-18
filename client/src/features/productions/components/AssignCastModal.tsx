@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { FormModal } from '../../../shared/components/ui/Modal/FormModal';
-import { useAssignments } from '../hooks/useAssignments';
-import { useCharacters } from '../hooks/useCharacters';
-import { getAvailableTalent } from '../../users/services/user.service';
+import { Select } from '../../../shared/components/ui/Form/Select';
+import { useAssignCastModal } from '../hooks/useAssignCastModal';
+import { Loader2 } from 'lucide-react';
 
 interface AssignCastModalProps {
   productionId: string;
@@ -10,28 +10,51 @@ interface AssignCastModalProps {
   onClose: () => void;
 }
 
-export function AssignCastModal({ productionId, isOpen, onClose }: AssignCastModalProps) {
-  const { addCastAssignment } = useAssignments(productionId);
-  const { characters } = useCharacters(productionId);
-  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState('');
-  const [selectedCharacter, setSelectedCharacter] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export function AssignCastModal({
+  productionId,
+  isOpen,
+  onClose,
+}: AssignCastModalProps) {
+  const {
+    availableUsers,
+    characters,
+
+    selectedUser,
+    selectedCharacter,
+
+    setSelectedUser,
+    setSelectedCharacter,
+
+    isLoadingUsers,
+    isLoadingCharacters,
+    isSubmitting,
+
+    error,
+
+    handleSubmit,
+    resetForm,
+  } = useAssignCastModal(productionId, isOpen);
 
   useEffect(() => {
-    if (isOpen) {
-      getAvailableTalent('CAST').then(setAvailableUsers);
+    if (!isOpen) {
+      resetForm();
     }
-  }, [isOpen]);
+  }, [isOpen, resetForm]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const isLoadingData =
+    isLoadingUsers || isLoadingCharacters;
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    const success = await addCastAssignment({ userId: selectedUser, characterId: selectedCharacter });
-    setIsSubmitting(false);
-    if (success) onClose();
+
+    const success = await handleSubmit();
+
+    if (success) {
+      resetForm();
+      onClose();
+    }
   };
 
   return (
@@ -39,41 +62,98 @@ export function AssignCastModal({ productionId, isOpen, onClose }: AssignCastMod
       isOpen={isOpen}
       onClose={onClose}
       title="Assign Cast Member"
-      onSubmit={handleSubmit}
+      onSubmit={handleFormSubmit}
       isSubmitting={isSubmitting}
       submitText="Confirm Assignment"
-      submitDisabled={characters.length === 0}
+      submitDisabled={
+        isLoadingData ||
+        !selectedUser ||
+        !selectedCharacter ||
+        characters.length === 0
+      }
     >
+      {error && (
+        <div className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
+      {/* Actor */}
       <div>
-        <label className="block text-sm font-medium text-slate-400 mb-1">Select Actor</label>
-        <select
-          required
-          value={selectedUser}
-          onChange={(e) => setSelectedUser(e.target.value)}
-          className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all"
+        <label
+          htmlFor="cast-user"
+          className="mb-1 block text-sm font-medium text-slate-400"
         >
-          <option value="" disabled>-- Choose an actor --</option>
-          {availableUsers.map((user) => (
-            <option key={user._id} value={user._id}>{user.fullName} ({user.email})</option>
-          ))}
-        </select>
+          Select Actor
+        </label>
+
+        {isLoadingUsers ? (
+          <div className="flex h-10 items-center gap-2 rounded-md border border-slate-600 bg-slate-900 px-3 text-sm text-slate-400">
+            <Loader2 size={16} className="animate-spin" />
+            Loading actors...
+          </div>
+        ) : (
+          <Select
+            id="cast-user"
+            required
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+          >
+            <option value="" disabled>
+              Choose an actor
+            </option>
+
+            {availableUsers.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.fullName} ({user.email})
+              </option>
+            ))}
+          </Select>
+        )}
+        {!isLoadingUsers && availableUsers.length === 0 && (
+          <p className="mt-1 text-xs text-red-400">
+            No available cast members found.          </p>
+        )}
       </div>
 
+      {/* Character */}
       <div>
-        <label className="block text-sm font-medium text-slate-400 mb-1">Select Character</label>
-        <select
-          required
-          value={selectedCharacter}
-          onChange={(e) => setSelectedCharacter(e.target.value)}
-          className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all"
+        <label
+          htmlFor="character"
+          className="mb-1 block text-sm font-medium text-slate-400"
         >
-          <option value="" disabled>-- Choose a character --</option>
-          {characters.map((char) => (
-            <option key={char._id} value={char._id}>{char.name}</option>
-          ))}
-        </select>
-        {characters.length === 0 && (
-          <p className="text-xs text-red-400 mt-1">Please create a character first before assigning.</p>
+          Select Character
+        </label>
+
+        {isLoadingCharacters ? (
+          <div className="flex h-10 items-center gap-2 rounded-md border border-slate-600 bg-slate-900 px-3 text-sm text-slate-400">
+            <Loader2 size={16} className="animate-spin" />
+            Loading characters...
+          </div>
+        ) : (
+          <Select
+            id="character"
+            required
+            value={selectedCharacter}
+            onChange={(e) => setSelectedCharacter(e.target.value)}
+            error={characters.length === 0}
+          >
+            <option value="" disabled>
+              Choose a character
+            </option>
+
+            {characters.map((character) => (
+              <option key={character._id} value={character._id}>
+                {character.name}
+              </option>
+            ))}
+          </Select>
+        )}
+
+        {!isLoadingCharacters && characters.length === 0 && (
+          <p className="mt-1 text-xs text-red-400">
+           No characters created yet. Please create a character first before assigning cast.
+          </p>
         )}
       </div>
     </FormModal>
